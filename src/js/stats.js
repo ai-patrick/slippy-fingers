@@ -16,9 +16,16 @@
         try {
             const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
             const textMeta = window.App?.getTextMeta?.() || {};
-            const payload = { text: sessionData.text || '', textId: textMeta.textId || '', textTitle: textMeta.textTitle || '', categoryId: textMeta.categoryId || '', mistakes: sessionData.mistakes || {}, wpm: sessionData.wpm || 0, cpm: sessionData.cpm || 0, accuracy: sessionData.accuracy || 100, duration: sessionData.duration || 0, startTime: sessionData.startTime || 0, endTime: sessionData.endTime || Date.now(), totalErrors: sessionData.totalErrors || 0, totalKeystrokes: sessionData.totalKeystrokes || 0 };
+            const language = window.SlippyProfile?.languageForText?.(textMeta.textId) || 'text';
+            const payload = { language, textId: textMeta.textId || '', textTitle: textMeta.textTitle || '', categoryId: textMeta.categoryId || '', mistakes: sessionData.mistakes || {}, wpm: sessionData.wpm || 0, cpm: sessionData.cpm || 0, accuracy: sessionData.accuracy || 100, duration: sessionData.duration || 0, startTime: sessionData.startTime || 0, endTime: sessionData.endTime || Date.now(), totalErrors: sessionData.totalErrors || 0, totalKeystrokes: sessionData.totalKeystrokes || 0 };
             stored.unshift(payload); if (stored.length > 100) stored.pop(); localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
         } catch (err) { console.warn('StatsManager: failed to save session:', err); }
+
+        // Record to profile for AI coach
+        if (window.SlippyProfile?.recordSession) {
+            const language = window.SlippyProfile?.languageForText?.(textMeta?.textId) || 'text';
+            window.SlippyProfile.recordSession(sessionData.keystrokes, language);
+        }
     }
     function getSessionSummary() { return lastSessionSummary; }
     function getHeatmapColor(count) { if (!count || count <= 0) return 'rgba(0,0,0,0)'; if (count <= 2) return 'rgba(255,235,59,0.30)'; if (count <= 5) return 'rgba(255,152,0,0.50)'; if (count <= 9) return 'rgba(244,67,54,0.70)'; return 'rgba(183,28,28,0.90)'; }

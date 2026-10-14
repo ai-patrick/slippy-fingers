@@ -1,11 +1,43 @@
-/* Copyright 2025 Asher Buk (original FingerGo) / Copyright 2025 Slippy Fingers Contributors / SPDX-License-Identifier: Apache-2.0 / https://github.com/go-pato/slippy-fingers */
+/* Copyright 2025 Asher Buk (original FingerGo) / Copyright 2025 Slippy Fingers Contributors / SPDX-License-Identifier: Apache-2.0 / https://github.com/ai-patrick/slippy-fingers */
 #library-controls { position: fixed; top: 6px; right: 6px; display: flex; flex-direction: column; gap: 0.4rem; z-index: 50; }
 #library-controls button { background: var(--button-bg); color: var(--accent); border: 1px solid var(--button-border); border-radius: 6px; padding: 7px 9px; font-size: 1.1rem; line-height: 1; cursor: pointer; box-shadow: 0 2px 8px var(--shadow-strong); opacity: 0.75; transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
 #library-controls button:hover { opacity: 1; background: var(--button-bg-hover); border-color: var(--button-border-hover); box-shadow: 0 4px 12px var(--shadow-strong); }
 #library-controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#library-controls button[aria-busy="true"] { opacity: 0.5; cursor: wait; }
 #zoom-controls { display: flex; gap: 0.25rem; }
 #zoom-controls button { flex: 1; padding: 3px 0; font-size: 0.65rem; font-weight: 600; }
 body.zen-mode #library-controls, body.zen-mode #library-sidebar { display: none; }
+
+/* Coach toast */
+#coach-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    max-width: 90vw;
+    max-width: 400px;
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--button-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px var(--shadow-strong);
+    color: var(--text-default);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    z-index: 200;
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    pointer-events: none;
+}
+#coach-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+#coach-toast.error {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
 #library-sidebar { position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background: var(--bg); border-left: 1px solid rgba(var(--accent-rgb), 0.1); transform: translate3d(100%, 0, 0); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; display: flex; flex-direction: column; will-change: transform; backface-visibility: hidden; -webkit-backface-visibility: hidden; contain: layout; }
 #library-sidebar.visible { transform: translate3d(0, 0, 0); }
 .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--line-strong); }

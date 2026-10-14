@@ -1,1 +1,2 @@
-/* /index.html 200
+# Cloudflare Pages handles SPA fallback automatically
+# No catch-all redirect needed - it would block /api/* functions

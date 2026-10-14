@@ -1,7 +1,7 @@
 // Copyright 2025 Asher Buk (original FingerGo)
 // Copyright 2025 Slippy Fingers Contributors
 // SPDX-License-Identifier: Apache-2.0
-// https://github.com/go-pato/slippy-fingers
+// https://github.com/ai-patrick/slippy-fingers
 
 /**
  * Application Controller - Main orchestrator
@@ -20,7 +20,7 @@
         bind('zoom-out', () => window.SettingsManager.zoomOut());
         bind('layout-toggle', () => window.UIManager?.showModal('settings', {}));
         const githubLink = document.getElementById('github-link');
-        if (githubLink) githubLink.addEventListener('click', e => { e.preventDefault(); window.open('https://github.com/go-pato/slippy-fingers', '_blank', 'noopener'); });
+        if (githubLink) githubLink.addEventListener('click', e => { e.preventDefault(); window.open('https://github.com/ai-patrick/slippy-fingers', '_blank', 'noopener'); });
     }
     function openColorSettings() { window.UIManager?.showModal('color-settings', { theme: window.SettingsManager.getTheme() }); }
     function checkModules() { const required = ['EventBus','TypingEngine','UIManager','KeyboardUI','SettingsManager','SessionManager']; for (const name of required) if (!window[name]) { console.error(`${name} not available. Ensure corresponding .js is loaded.`); return false; } return true; }
