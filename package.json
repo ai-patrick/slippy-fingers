@@ -7,17 +7,19 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "deploy": "wrangler pages deploy dist",
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
     "format": "prettier --write 'src/**/*.{js,html,css}'",
     "format:check": "prettier --check 'src/**/*.{js,html,css}'"
   },
   "devDependencies": {
+    "vite": "^8.3.4",
+    "vite-plugin-pwa": "^0.20.0",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.4.2",
-    "vite": "^8.3.4",
-    "vite-plugin-pwa": "^0.20.0"
+    "wrangler": "^4.151.0"
   },
   "keywords": [
     "typing",
@@ -31,6 +33,6 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/go-pato/slippy-fingers.git"
+    "url": "https://github.com/ai-patrick/slippy-fingers.git"
   }
 }
