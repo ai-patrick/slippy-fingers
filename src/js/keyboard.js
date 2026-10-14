@@ -1,0 +1,224 @@
+// Copyright 2025 Asher Buk (original FingerGo)
+// Copyright 2025 Slippy Fingers Contributors
+// SPDX-License-Identifier: Apache-2.0
+// https://github.com/go-pato/slippy-fingers
+
+/**
+ * Keyboard rendering and interaction module
+ * Depends on: layouts.js (KeyboardLayouts global), utils.js (KeyUtils)
+ */
+(() => {
+    const container = document.getElementById('keyboard');
+    if (!container) return;
+    if (!window.KeyboardLayouts) { console.error('KeyboardLayouts module not loaded. Include layouts.js before keyboard.js'); return; }
+    if (!window.KeyUtils) { console.error('KeyUtils not available. Include utils.js before keyboard.js'); return; }
+
+    let layout = window.KeyboardLayouts.getDefaultLayout();
+    if (!layout) { console.error('No keyboard layout available'); return; }
+    let rows = layout.rows;
+    let fingerForKey = layout.fingerMap;
+
+    const keyToEls = new Map();
+    const fingerToEl = new Map();
+
+    function render() {
+        fingerToEl.clear();
+        const addKeyMapping = (key, element) => {
+            if (!keyToEls.has(key)) keyToEls.set(key, []);
+            keyToEls.get(key).push(element);
+        };
+        container.innerHTML = '';
+        rows.forEach(row => {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'keyboard-row';
+            const isSpaceRow = row.length === 1 && row[0]?.key === ' ';
+            row.forEach(def => {
+                const el = document.createElement('div');
+                el.className = ['key', def.className].filter(Boolean).join(' ');
+                el.setAttribute('role', 'presentation');
+                el.tabIndex = -1;
+                el.dataset.key = def.key;
+                const finger = fingerForKey[def.key];
+                if (finger) el.dataset.finger = finger;
+                const label = def.label ?? def.key.toUpperCase();
+                if (Array.isArray(label)) { el.innerHTML = `${label[0]}<br>${label[1]}`; }
+                else { el.textContent = label; }
+                addKeyMapping(def.key, el);
+                if (def.key.length === 1 && def.key !== def.key.toUpperCase()) addKeyMapping(def.key.toUpperCase(), el);
+                rowEl.appendChild(el);
+            });
+            if (isSpaceRow) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'keyboard-row keyboard-row-space';
+                const leftHand = createHandElement('left');
+                const rightHand = createHandElement('right');
+                if (leftHand) wrapper.appendChild(leftHand);
+                wrapper.appendChild(rowEl);
+                if (rightHand) wrapper.appendChild(rightHand);
+                container.appendChild(wrapper);
+                return;
+            }
+            container.appendChild(rowEl);
+        });
+    }
+
+    const fingerMeta = {
+        'left-pinky': { label: 'P', type: 'pinky', title: 'Left pinky' },
+        'left-ring': { label: 'R', type: 'ring', title: 'Left ring' },
+        'left-middle': { label: 'M', type: 'middle', title: 'Left middle' },
+        'left-index': { label: 'I', type: 'index', title: 'Left index' },
+        'left-thumb': { label: 'T', type: 'thumb', title: 'Left thumb' },
+        'right-thumb': { label: 'T', type: 'thumb', title: 'Right thumb' },
+        'right-index': { label: 'I', type: 'index', title: 'Right index' },
+        'right-middle': { label: 'M', type: 'middle', title: 'Right middle' },
+        'right-ring': { label: 'R', type: 'ring', title: 'Right ring' },
+        'right-pinky': { label: 'P', type: 'pinky', title: 'Right pinky' },
+    };
+
+    const handStructure = [
+        { hand: 'left', fingers: ['left-pinky', 'left-ring', 'left-middle', 'left-index', 'left-thumb'] },
+        { hand: 'right', fingers: ['right-pinky', 'right-ring', 'right-middle', 'right-index', 'right-thumb'] },
+    ];
+
+    function createHandElement(hand) {
+        const structure = handStructure.find(h => h.hand === hand);
+        if (!structure) return null;
+        const handEl = document.createElement('div');
+        handEl.className = `hand hand-${hand}`;
+        handEl.dataset.hand = hand;
+        structure.fingers.forEach(fingerId => {
+            const meta = fingerMeta[fingerId];
+            if (!meta) return;
+            const fingerEl = document.createElement('div');
+            fingerEl.className = ['finger', meta.type].join(' ');
+            fingerEl.dataset.finger = fingerId;
+            fingerEl.title = meta.title;
+            fingerEl.setAttribute('aria-label', meta.title);
+            fingerEl.textContent = meta.label;
+            handEl.appendChild(fingerEl);
+            fingerToEl.set(fingerId, fingerEl);
+        });
+        return handEl;
+    }
+
+    let highlightedFingers = [];
+    function toggleFingerActive(fingerId, active) {
+        const el = fingerToEl.get(fingerId);
+        if (el) el.classList.toggle('active', active);
+    }
+
+    function highlightFingers(originalChar) {
+        highlightedFingers.forEach(id => toggleFingerActive(id, false));
+        highlightedFingers = [];
+        keyToEls.get('Shift')?.forEach(el => el.classList.remove('target'));
+        if (!originalChar) return;
+        let keyName = originalChar;
+        if (originalChar === '\n') keyName = 'Enter';
+        else if (originalChar === '\t') keyName = 'Tab';
+        let keyForFingerMap = keyName;
+        if (keyForFingerMap.length === 1 && keyForFingerMap !== keyForFingerMap.toLowerCase()) keyForFingerMap = keyForFingerMap.toLowerCase();
+        else if (layout.shiftToBaseKey?.[keyForFingerMap]) keyForFingerMap = layout.shiftToBaseKey[keyForFingerMap];
+        const fingerId = fingerForKey[keyForFingerMap];
+        if (!fingerId) return;
+        if (fingerId === 'thumb') {
+            ['left-thumb', 'right-thumb'].forEach(id => { if (!fingerToEl.has(id)) return; toggleFingerActive(id, true); highlightedFingers.push(id); });
+            return;
+        }
+        const needsShift = requiresShift(originalChar);
+        if (needsShift) {
+            const leftHandKeys = layout.leftHandKeys;
+            const isLeftHandKey = leftHandKeys?.has(originalChar) || leftHandKeys?.has(keyForFingerMap);
+            const shiftFinger = isLeftHandKey ? 'right-pinky' : 'left-pinky';
+            if (fingerToEl.has(shiftFinger)) { toggleFingerActive(shiftFinger, true); highlightedFingers.push(shiftFinger); }
+            keyToEls.get('Shift')?.forEach((el, idx) => { if ((isLeftHandKey && idx === 1) || (!isLeftHandKey && idx === 0)) el.classList.add('target'); });
+        }
+        if (fingerToEl.has(fingerId)) { toggleFingerActive(fingerId, true); highlightedFingers.push(fingerId); }
+    }
+
+    function requiresShift(char) {
+        if (!char || char.length !== 1) return false;
+        if (char !== char.toLowerCase() && char === char.toUpperCase()) return true;
+        return !!layout.shiftToBaseKey?.[char];
+    }
+
+    function setPressed(key, pressed) {
+        const els = keyToEls.get(key);
+        if (!els) return;
+        els.forEach(el => el.classList.toggle('pressed', pressed));
+    }
+
+    let targetKey = null;
+    function setTarget(key, originalChar) {
+        if (targetKey && keyToEls.get(targetKey)) keyToEls.get(targetKey).forEach(el => el.classList.remove('target'));
+        keyToEls.get('Shift')?.forEach(el => el.classList.remove('target'));
+        if (!originalChar) { targetKey = null; return; }
+        let keyName = originalChar;
+        if (originalChar === '\n') keyName = 'Enter';
+        else if (originalChar === '\t') keyName = 'Tab';
+        else if (originalChar === ' ') keyName = ' ';
+        const baseKey = window.KeyUtils.baseKey(keyName, layout);
+        targetKey = baseKey;
+        if (baseKey && keyToEls.get(baseKey)) keyToEls.get(baseKey).forEach(el => el.classList.add('target'));
+        highlightFingers(originalChar);
+    }
+
+    let deadKeySteps = null;
+    const MODIFIER_KEYS = new Set(['Shift', 'Control', 'Alt', 'AltGraph', 'Meta', 'CapsLock']);
+
+    function showDeadKeyStep(step) { if (deadKeySteps) setTarget(deadKeySteps[step], deadKeySteps[step]); }
+
+    function setTargetChar(originalChar) {
+        deadKeySteps = window.KeyUtils.deadKeySequence(originalChar, layout);
+        if (deadKeySteps) showDeadKeyStep(0);
+        else setTarget(window.KeyUtils.normalizeKey(originalChar), originalChar);
+    }
+
+    function setErrorState(key) { const els = keyToEls.get(key); if (!els) return; els.forEach(el => el.classList.add('error')); }
+    function clearErrorState(key) { const els = keyToEls.get(key); if (!els) return; els.forEach(el => el.classList.remove('error')); }
+    function clearAllErrors() { keyToEls.forEach(els => els.forEach(el => el.classList.remove('error'))); }
+
+    function onKeyDown(e) {
+        if (deadKeySteps && !e.isComposing && e.keyCode !== 229 && !MODIFIER_KEYS.has(e.key)) showDeadKeyStep(e.key === 'Dead' ? 1 : 0);
+        const k = window.KeyUtils.normalizeKey(e.key);
+        if (e.key === 'Shift') {
+            const shiftEls = keyToEls.get('Shift');
+            if (shiftEls) { const idx = e.location === 1 ? 0 : 1; shiftEls[idx]?.classList.add('pressed'); }
+            return;
+        }
+        setPressed(k, true);
+    }
+
+    function onKeyUp(e) {
+        const k = window.KeyUtils.normalizeKey(e.key);
+        if (e.key === 'Shift') {
+            const shiftEls = keyToEls.get('Shift');
+            if (shiftEls) { const idx = e.location === 1 ? 0 : 1; shiftEls[idx]?.classList.remove('pressed'); }
+            return;
+        }
+        setPressed(k, false);
+    }
+
+    function setLayout(layoutId) {
+        const newLayout = window.KeyboardLayouts.getLayout(layoutId);
+        if (!newLayout) return false;
+        layout = newLayout; rows = layout.rows; fingerForKey = layout.fingerMap;
+        container.innerHTML = ''; keyToEls.clear(); fingerToEl.clear(); render(); return true;
+    }
+
+    render();
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('compositionstart', () => showDeadKeyStep(1));
+    window.addEventListener('compositionend', () => showDeadKeyStep(0));
+
+    window.KeyboardUI = {
+        setTargetKey: setTargetChar,
+        clearTarget: () => setTargetChar(null),
+        setError: k => window.KeyUtils.keysForChar(k, layout).forEach(setErrorState),
+        clearError: k => window.KeyUtils.keysForChar(k, layout).forEach(clearErrorState),
+        clearAllErrors,
+        getCurrentLayout: () => layout,
+        setLayout,
+        getAvailableLayouts: () => window.KeyboardLayouts.getAvailableLayouts(),
+    };
+})();

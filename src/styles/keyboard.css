@@ -1,0 +1,38 @@
+/* Copyright 2025 Asher Buk (original FingerGo) / Copyright 2025 Slippy Fingers Contributors / SPDX-License-Identifier: Apache-2.0 / https://github.com/go-pato/slippy-fingers */
+#keyboard { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.75rem 1rem; max-width: 1200px; width: 100%; }
+.keyboard-row-space { justify-content: center; align-items: flex-end; gap: clamp(0.4rem, 1vw, 0.85rem); margin-top: 0.25rem; }
+.hand { display: flex; align-items: flex-end; gap: 0.25rem; padding: 0; border: none; border-radius: 0; background: transparent; box-shadow: none; pointer-events: none; }
+.hand-left { justify-content: flex-end; }
+.hand-right { flex-direction: row-reverse; justify-content: flex-end; }
+.finger { width: clamp(12px, 1.3vw, 22px); display: flex; align-items: center; justify-content: center; border: 1px solid var(--line-weak); border-radius: 10px 10px 8px 8px; background: rgba(var(--accent-rgb), 0.08); color: var(--accent); font-size: 0.5rem; font-weight: 600; letter-spacing: 0.04em; opacity: 0.65; transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease; }
+.finger.pinky { height: clamp(36px, 6vh, 60px); }
+.finger.ring { height: clamp(42px, 6.5vh, 70px); }
+.finger.middle { height: clamp(48px, 7vh, 80px); }
+.finger.index { height: clamp(44px, 6.5vh, 72px); }
+.finger.thumb { width: clamp(32px, 3.5vw, 54px); height: clamp(24px, 4vh, 40px); border-radius: 18px 18px 12px 12px; }
+.finger.active { opacity: 1; background: rgba(var(--accent-rgb), 0.35); border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.4), 0 2px 4px rgba(0,0,0,0.2); transform: translateY(-4px); animation: pulse 1.5s ease-in-out infinite; }
+@media (max-width: 640px) { .keyboard-row-space { flex-wrap: wrap; gap: 0.5rem; } }
+.keyboard-row { display: flex; gap: 0.45rem; justify-content: center; }
+.key { --key-size: clamp(30px, 4vw, 48px); min-width: var(--key-size); height: var(--key-size); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 400; color: var(--accent); background: var(--key-bg); border: 1px solid var(--key-border); border-radius: 6px; cursor: default; transition: all 0.15s ease; user-select: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(var(--accent-rgb), 0.1), inset 0 0 20px var(--heatmap-color, rgba(0,0,0,0)); position: relative; line-height: 1.2; }
+.key:hover { background: var(--key-bg-hover); border-color: var(--key-border-strong); }
+.key.pressed { background: var(--key-pressed-bg); border-color: var(--key-pressed-border); transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 2px 4px rgba(var(--accent-rgb), 0.15), inset 0 0 20px var(--heatmap-color, rgba(0,0,0,0)); }
+.key.target { background: rgba(var(--accent-rgb), 0.35); border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.4), 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(var(--accent-rgb), 0.2), inset 0 0 20px var(--heatmap-color, rgba(0,0,0,0)); animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.4), 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(var(--accent-rgb), 0.2), inset 0 0 20px var(--heatmap-color, rgba(0,0,0,0)); } 50% { box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.6), 0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(var(--accent-rgb), 0.3), inset 0 0 20px var(--heatmap-color, rgba(0,0,0,0)); } }
+.key.error { background: var(--error-bg, rgba(220,53,69,0.2)); border-color: var(--error-border, rgba(220,53,69,0.4)); }
+.key-wide { min-width: calc(var(--key-size) * 1.6); }
+.key-wider { min-width: calc(var(--key-size) * 1.9); }
+.key-widest { min-width: calc(var(--key-size) * 2.2); }
+.key-iso-shift { min-width: calc(var(--key-size) * 1.3); }
+.key-space { min-width: calc(var(--key-size) * 8); }
+.key-wide, .key-wider, .key-widest, .key-iso-shift { font-size: 0.75rem; }
+.key[data-finger='left-pinky'] { border-left: 3px solid var(--finger-left-pinky, rgba(255,107,107,0.3)); }
+.key[data-finger='left-ring'] { border-left: 3px solid var(--finger-left-ring, rgba(255,159,64,0.3)); }
+.key[data-finger='left-middle'] { border-left: 3px solid var(--finger-left-middle, rgba(255,205,86,0.3)); }
+.key[data-finger='left-index'] { border-left: 3px solid var(--finger-left-index, rgba(75,192,192,0.3)); }
+.key[data-finger='right-index'] { border-left: 3px solid var(--finger-right-index, rgba(var(--accent-rgb), 0.4)); }
+.key[data-finger='right-middle'] { border-left: 3px solid var(--finger-right-middle, rgba(153,102,255,0.3)); }
+.key[data-finger='right-ring'] { border-left: 3px solid var(--finger-right-ring, rgba(201,203,207,0.3)); }
+.key[data-finger='right-pinky'] { border-left: 3px solid var(--finger-right-pinky, rgba(255,99,132,0.3)); }
+.key[data-finger='thumb'] { border-top: 3px solid var(--finger-thumb, rgba(var(--accent-rgb), 0.4)); }
+.key { transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
+@media (prefers-reduced-motion: reduce) { .key { transition: none; } .key.target { animation: none; } }

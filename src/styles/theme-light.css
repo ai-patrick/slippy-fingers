@@ -1,0 +1,35 @@
+/* Copyright 2025 Asher Buk (original FingerGo) / Copyright 2025 Slippy Fingers Contributors / SPDX-License-Identifier: Apache-2.0 / https://github.com/go-pato/slippy-fingers */
+.theme-light {
+    --bg: #f7f1e6;
+    --text-default: #1a1310;
+    --text-muted: #3a2f26;
+    --accent: #1a1310;
+    --accent-rgb: 26, 19, 16;
+    --line-weak: rgba(var(--accent-rgb), 0.18);
+    --line-strong: rgba(var(--accent-rgb), 0.32);
+    --key-bg: rgba(167, 137, 107, 0.18);
+    --key-bg-hover: rgba(167, 137, 107, 0.24);
+    --key-border: rgba(167, 137, 107, 0.4);
+    --key-border-strong: rgba(167, 137, 107, 0.55);
+    --key-pressed-bg: rgba(167, 137, 107, 0.32);
+    --key-pressed-border: rgba(167, 137, 107, 0.55);
+    --shadow-strong: rgba(0, 0, 0, 0.14);
+    --button-bg: rgba(var(--accent-rgb), 0.35);
+    --button-bg-hover: rgba(var(--accent-rgb), 0.45);
+    --button-border: rgba(var(--accent-rgb), 0.6);
+    --button-border-hover: rgba(var(--accent-rgb), 0.7);
+    --error-bg: rgba(194, 72, 49, 0.22);
+    --error-border: rgba(194, 72, 49, 0.45);
+    --error-surface: rgba(194, 72, 49, 0.12);
+    --error-text: #a83d27;
+    --finger-left-pinky: rgba(206, 92, 73, 0.35);
+    --finger-left-ring: rgba(219, 136, 63, 0.35);
+    --finger-left-middle: rgba(226, 174, 85, 0.35);
+    --finger-left-index: rgba(122, 173, 155, 0.35);
+    --finger-right-index: rgba(137, 164, 203, 0.35);
+    --finger-right-middle: rgba(175, 132, 222, 0.35);
+    --finger-right-ring: rgba(189, 181, 176, 0.35);
+    --finger-right-pinky: rgba(210, 117, 132, 0.35);
+    --finger-thumb: rgba(167, 137, 107, 0.55);
+    --overlay-bg: rgba(42, 31, 21, 0.55);
+}

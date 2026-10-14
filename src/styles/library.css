@@ -1,0 +1,42 @@
+/* Copyright 2025 Asher Buk (original FingerGo) / Copyright 2025 Slippy Fingers Contributors / SPDX-License-Identifier: Apache-2.0 / https://github.com/go-pato/slippy-fingers */
+#library-controls { position: fixed; top: 6px; right: 6px; display: flex; flex-direction: column; gap: 0.4rem; z-index: 50; }
+#library-controls button { background: var(--button-bg); color: var(--accent); border: 1px solid var(--button-border); border-radius: 6px; padding: 7px 9px; font-size: 1.1rem; line-height: 1; cursor: pointer; box-shadow: 0 2px 8px var(--shadow-strong); opacity: 0.75; transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+#library-controls button:hover { opacity: 1; background: var(--button-bg-hover); border-color: var(--button-border-hover); box-shadow: 0 4px 12px var(--shadow-strong); }
+#library-controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#zoom-controls { display: flex; gap: 0.25rem; }
+#zoom-controls button { flex: 1; padding: 3px 0; font-size: 0.65rem; font-weight: 600; }
+body.zen-mode #library-controls, body.zen-mode #library-sidebar { display: none; }
+#library-sidebar { position: fixed; top: 0; right: 0; width: 300px; height: 100vh; background: var(--bg); border-left: 1px solid rgba(var(--accent-rgb), 0.1); transform: translate3d(100%, 0, 0); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; display: flex; flex-direction: column; will-change: transform; backface-visibility: hidden; -webkit-backface-visibility: hidden; contain: layout; }
+#library-sidebar.visible { transform: translate3d(0, 0, 0); }
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--line-strong); }
+.sidebar-header h3 { margin: 0; font-size: 1.1rem; color: var(--text-default); }
+#sidebar-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 4px 8px; border-radius: 4px; }
+#sidebar-close:hover { background: var(--key-bg-hover); color: var(--text-default); }
+.sidebar-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+#category-tree { border-bottom: 1px solid var(--line-weak); }
+.category-list { list-style: none; padding: 0; margin: 0; }
+.category-item { padding: 10px 16px; cursor: pointer; border-bottom: 1px solid var(--line-weak); display: flex; align-items: center; gap: 8px; color: var(--text-default); transition: background 0.15s ease; }
+.category-item:hover { background: var(--key-bg-hover); }
+.category-item.active { font-weight: 500; }
+.category-item.active::before { content: '▸'; font-size: 18px; margin-right: 8px; transition: transform 0.15s ease; color: var(--text-default); }
+.category-item.active.expanded::before { transform: rotate(90deg); }
+.category-item .delete-btn { margin-left: auto; padding: 2px 6px; font-size: 14px; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: inherit; opacity: 0; transition: opacity 0.15s ease, background 0.15s ease; }
+.category-item:hover .delete-btn { opacity: 0.9; }
+.category-item .delete-btn:hover { opacity: 1; background: rgba(239,68,68,0.15); }
+.category-item .icon { font-size: 16px; }
+.category-item .count { font-size: 0.85em; color: var(--text-muted); }
+.category-item .spacer { flex: 1; }
+#text-list { flex: 1; overflow-y: auto; }
+.text-item { padding: 12px 16px; border-bottom: 1px solid var(--line-weak); cursor: pointer; transition: background 0.15s ease; }
+.text-item:hover { background: var(--key-bg-hover); }
+.text-item.selected { background: rgba(var(--accent-rgb), 0.1); }
+.text-item-title { font-weight: 500; margin-bottom: 4px; color: var(--text-default); display: flex; align-items: center; gap: 6px; }
+.text-item-title .favorite { color: #f59e0b; font-size: 12px; }
+.text-item-meta { font-size: 0.85em; color: var(--text-muted); display: flex; gap: 12px; }
+.text-item-actions { display: flex; gap: 4px; margin-top: 8px; }
+.text-item-actions .icon-btn { padding: 4px 6px; font-size: 16px; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: inherit; opacity: 0.6; transition: opacity 0.2s ease, background 0.2s ease; }
+.text-item-actions .icon-btn:hover { opacity: 1; background: rgba(var(--accent-rgb), 0.1); }
+.library-empty { padding: 32px 16px; text-align: center; color: var(--text-muted); }
+.library-empty p { margin: 0 0 16px 0; }
+.empty-add-text { padding: 6px 16px; font-size: 14px; background: var(--accent); color: var(--bg); border: none; border-radius: 4px; cursor: pointer; font-weight: 500; transition: opacity 0.15s ease; }
+.empty-add-text:hover { opacity: 0.9; }

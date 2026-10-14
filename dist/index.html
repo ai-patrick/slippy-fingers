@@ -1,0 +1,196 @@
+<!doctype html>
+<!--
+  Copyright 2025 Asher Buk (original FingerGo)
+  Copyright 2025 Slippy Fingers Contributors
+  SPDX-License-Identifier: Apache-2.0
+  https://github.com/go-pato/slippy-fingers
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Slippy Fingers - Touch-typing trainer with real-time keyboard visualization" />
+        <meta name="theme-color" content="#0d0b09" />
+        <title>Slippy Fingers</title>
+        <link rel="manifest" href="manifest.webmanifest" />
+        <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+        <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+      <script type="module" crossorigin src="/assets/index-C5lPGRxb.js"></script>
+      <link rel="stylesheet" crossorigin href="/assets/index-BdYnOMUj.css">
+    <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
+    <body class="theme-dark">
+        <!-- SVG icon sprite: single source of truth for all Lucide icons -->
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none" aria-hidden="true">
+            <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </symbol>
+            <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2m-7.07-14.07 1.41 1.41M18.66 18.66l1.41 1.41M2 12h2M20 12h2m-15.07 5.93 1.41-1.41M18.66 5.34l1.41-1.41" />
+            </symbol>
+            <symbol id="icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+                <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+                <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+                <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+            </symbol>
+            <symbol id="icon-scan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+            </symbol>
+            <symbol id="icon-bar-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" x2="18" y1="20" y2="10" />
+                <line x1="12" x2="12" y1="20" y2="4" />
+                <line x1="6" x2="6" y1="20" y2="14" />
+            </symbol>
+            <symbol id="icon-keyboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2" ry="2" />
+                <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h.001M12 12h.001M16 12h.001M7 16h10" />
+            </symbol>
+            <symbol id="icon-crosshair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="22" x2="18" y1="12" y2="12" />
+                <line x1="6" x2="2" y1="12" y2="12" />
+                <line x1="12" x2="12" y1="6" y2="2" />
+                <line x1="12" x2="12" y1="22" y2="18" />
+            </symbol>
+            <symbol id="icon-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+            </symbol>
+            <symbol id="icon-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </symbol>
+            <symbol id="icon-folder-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
+                <line x1="12" x2="12" y1="10" y2="16" />
+                <line x1="9" x2="15" y1="13" y2="13" />
+            </symbol>
+            <symbol id="icon-languages" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m5 8 6 6m-1-6 6 6 2-3M2 5h12M7 2h1m15 20-5-10-5 10M14 18h6" />
+            </symbol>
+            <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                <line x1="10" x2="10" y1="11" y2="17" />
+                <line x1="14" x2="14" y1="11" y2="17" />
+            </symbol>
+            <symbol id="icon-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                <path d="m15 5 4 4" />
+            </symbol>
+            <symbol id="icon-star" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </symbol>
+        </svg>
+        <div id="app" class="theme-dark">
+            <div id="top-action-bar" role="region" aria-label="Quick actions">
+                <button id="theme-toggle" class="top-action-button" aria-label="Toggle theme" title="Toggle theme" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-moon" /></svg>
+                </button>
+                <button id="color-settings" class="top-action-button" aria-label="Color settings" title="Customize colors" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-palette" /></svg>
+                </button>
+                <button id="zen-toggle" class="top-action-button" aria-label="Toggle Zen mode" title="Toggle Zen mode (Ctrl+Alt+Z)" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-scan" /></svg>
+                </button>
+                <button id="stats-toggle" class="top-action-button" aria-label="Toggle stats bar" title="Toggle stats bar (Ctrl+Alt+S)" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-bar-chart" /></svg>
+                </button>
+                <button id="keyboard-toggle" class="top-action-button" aria-label="Toggle keyboard" title="Toggle keyboard (Ctrl+Alt+K)" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-keyboard" /></svg>
+                </button>
+                <button id="strict-mode-toggle" class="top-action-button" aria-label="Toggle strict mode" title="Toggle strict mode (require backspace for errors)" aria-pressed="false" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-crosshair" /></svg>
+                </button>
+                <button id="reset-session" class="top-action-button" aria-label="Reset session" title="Reset session (Ctrl+Alt+R)" type="button">↻</button>
+            </div>
+            <!-- Text Display Area -->
+            <section id="text-area">
+                <div id="text-display"></div>
+                <textarea id="text-input" aria-label="Typing input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+            </section>
+
+            <!-- Statistics Bar -->
+            <section id="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-label">WPM</span>
+                    <span class="stat-value" id="wpm">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CPM</span>
+                    <span class="stat-value" id="cpm">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Accuracy</span>
+                    <span class="stat-value" id="accuracy">100%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Time</span>
+                    <span class="stat-value" id="timer">00:00</span>
+                </div>
+            </section>
+
+            <!-- Keyboard Section -->
+            <section id="keyboard-section">
+                <div id="keyboard"></div>
+            </section>
+
+            <!-- Library Controls (right edge) -->
+            <div id="library-controls" role="region" aria-label="Library controls">
+                <div id="zoom-controls">
+                    <button id="zoom-out" aria-label="Decrease text size" title="Decrease text size (Ctrl+−)" type="button">−</button>
+                    <button id="zoom-in" aria-label="Increase text size" title="Increase text size (Ctrl++)" type="button">+</button>
+                </div>
+                <button id="library-toggle" aria-label="Library" title="Library (Ctrl+Alt+L)" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-book-open" /></svg>
+                </button>
+                <button id="text-add" aria-label="Add New" title="Add New (Ctrl+Alt+N)" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-folder-plus" /></svg>
+                </button>
+                <button id="layout-toggle" aria-label="Keyboard layout" title="Keyboard layout (Ctrl+,)" type="button">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-languages" /></svg>
+                </button>
+            </div>
+
+            <!-- Library Sidebar (slide-in panel) -->
+            <aside id="library-sidebar" aria-label="Library">
+                <header class="sidebar-header">
+                    <h3>Library</h3>
+                    <button id="sidebar-close" aria-label="Close sidebar">✕</button>
+                </header>
+                <div class="sidebar-content">
+                    <nav id="category-tree"></nav>
+                    <div id="text-list"></div>
+                </div>
+            </aside>
+
+            <!-- GitHub Link -->
+            <a id="github-link" href="https://github.com/go-pato/slippy-fingers" target="_blank" rel="noopener" aria-label="View on GitHub" title="View on GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+            </a>
+
+            <!-- Modal Overlay -->
+            <div id="modal-overlay" class="modal-hidden">
+                <div id="modal-container">
+                    <div id="modal-header">
+                        <h2 id="modal-title"></h2>
+                        <button id="modal-close" aria-label="Close modal" tabindex="-1">✕</button>
+                    </div>
+                    <div id="modal-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event system: must load first as all modules depend on it -->
+        <!-- Constants: application-wide shared values -->
+        <!-- Utility functions: key normalization (used by keyboard, typing, app) -->
+        <!-- Keyboard layouts: load individual layouts before registry -->
+        <!-- Modal system: core first, then type-specific renderers -->
+        <!-- Settings, session, library, shortcuts: modular architecture -->
+    </body>
+</html>
