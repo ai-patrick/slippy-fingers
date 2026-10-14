@@ -95,8 +95,20 @@
             session.totalErrors++; session.mistakes[expectedKey] = (session.mistakes[expectedKey] || 0) + 1;
             window.EventBus.emit('typing:error', { char: expectedChar, expected: expectedKey, pressed: pressedKey, index: session.currentIndex });
             if (window.KeyboardUI) window.KeyboardUI.setError(expectedKey);
-            if (strictMode) { session.currentIndex++; updateTargetKey(); }
-            else { session.hasError = true; }
+            if (strictMode) {
+                session.currentIndex++; updateTargetKey();
+            } else {
+                session.hasError = true;
+                // Allow typing the correct character to fix error (no backspace needed)
+                if (pressedKey === expectedKey) {
+                    session.hasError = false;
+                    if (window.KeyboardUI) window.KeyboardUI.clearError(expectedKey);
+                    session.currentIndex++; updateTargetKey();
+                    if (session.currentIndex >= session.text.length) completeSession();
+                    emitStatsUpdate();
+                    return;
+                }
+            }
             emitStatsUpdate();
         }
     }

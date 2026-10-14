@@ -67,6 +67,7 @@
     function hide() { const sidebar = getEl('library-sidebar'); if (sidebar) { sidebar.classList.remove('visible'); state.isVisible = false; } }
     function toggle() { state.isVisible ? hide() : show(); }
     function isVisible() { return state.isVisible; }
-    function init() { getEl('library-toggle')?.addEventListener('click', e => { toggle(); e.currentTarget.blur(); }); getEl('text-add')?.addEventListener('click', e => { openEditor(null); e.currentTarget.blur(); }); getEl('sidebar-close')?.addEventListener('click', hide); window.EventBus?.on('text:save', async data => { const success = await saveText(data); if (success) window.ModalManager?.hide(); }); }
-    window.LibraryManager = { init, show, hide, toggle, isVisible, refresh, selectText, openEditor, saveText, deleteText, deleteCategory };
+    function init() { getEl('library-toggle')?.addEventListener('click', e => { toggle(); e.currentTarget.blur(); }); getEl('text-add')?.addEventListener('click', e => { openEditor(null); e.currentTarget.blur(); }); getEl('topic-picker')?.addEventListener('click', e => { window.ModalManager?.show('topic-picker', {}); e.currentTarget.blur(); }); getEl('sidebar-close')?.addEventListener('click', hide); window.EventBus?.on('text:save', async data => { const success = await saveText(data); if (success) window.ModalManager?.hide(); }); }
+    function getLibrary() { if (!state.library) loadLibrary(); return state.library; }
+    window.LibraryManager = { init, show, hide, toggle, isVisible, refresh, selectText, openEditor, saveText, deleteText, deleteCategory, getLibrary };
 })();
