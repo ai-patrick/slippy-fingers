@@ -32,6 +32,20 @@
     const COACH_TOKEN_KEY = 'slippy-coach-token';
     const COACH_LANG_KEY = 'slippy-coach-lang';
 
+    function promptForToken() {
+        return new Promise((resolve) => {
+            const existing = getToken();
+            const msg = existing
+                ? 'Enter your COACH_TOKEN (leave blank to use local drill only):'
+                : 'Enter your COACH_TOKEN to enable AI Coach (get it from your Cloudflare Pages secrets):';
+            const input = prompt(msg, existing);
+            if (input !== null) {
+                setToken(input.trim() || '');
+            }
+            resolve(getToken());
+        });
+    }
+
     function getToken() {
         try {
             return localStorage.getItem(COACH_TOKEN_KEY) || '';
@@ -205,7 +219,37 @@
             let aiResult = null;
             let fallbackReason = null;
 
-            if (token) {
+            if (!token) {
+                fallbackReason = 'no token';
+                // Prompt for token once, then retry if provided
+                const newToken = await promptForToken();
+                if (newToken) {
+                    // Retry with new token
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 20000);
+                        const response = await fetch('/api/coach', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-coach-token': newToken,
+                            },
+                            body: JSON.stringify(payload),
+                            signal: controller.signal,
+                        });
+                        clearTimeout(timeoutId);
+
+                        if (response.ok) {
+                            aiResult = await response.json();
+                            fallbackReason = null;
+                        } else {
+                            fallbackReason = `API ${response.status}`;
+                        }
+                    } catch (err) {
+                        fallbackReason = err.name === 'AbortError' ? 'timeout' : 'network error';
+                    }
+                }
+            } else {
                 try {
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 20000);
@@ -228,8 +272,6 @@
                 } catch (err) {
                     fallbackReason = err.name === 'AbortError' ? 'timeout' : 'network error';
                 }
-            } else {
-                fallbackReason = 'no token';
             }
 
             let code = null;
