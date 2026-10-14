@@ -15,7 +15,7 @@ const ALLOWED_LANGUAGES = new Set([
 
 const MAX_BODY_CHARS = 8000;
 const UPSTREAM_TIMEOUT_MS = 15000;
-const NVIDIA_API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
+const NVIDIA_API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions'; // default, overridden by env.NVIDIA_API_URL
 
 // Model from build.nvidia.com that exists today (non-reasoning instruct)
 const DEFAULT_MODEL = 'meta/llama-3.1-70b-instruct';
@@ -141,9 +141,10 @@ function parseCoachResponse(text) {
 async function callNvidiaApi(env, messages, model, retry = false) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
+    const apiUrl = env.NVIDIA_API_URL || NVIDIA_API_URL;
 
     try {
-        const response = await fetch(NVIDIA_API_URL, {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${env.NVIDIA_API_KEY}`,
